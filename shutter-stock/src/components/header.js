@@ -4,7 +4,7 @@ import '../global-styles.css';
 function Header() {
     return (
         <Fragment className="mainContainer">
-            <h1>Photo Gallery</h1>
+            <h1 style={{color: "white"}}>Photo Gallery</h1>
         </Fragment>
     )
 }
