@@ -1,7 +1,14 @@
+@import '~antd/dist/antd.css';
+
 .mainContainer {
     background-color: #282c34;
     display: grid;
+    align-content: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 50px;
     min-height: 100vh;
+    grid-row-gap: 20px;
 }
 
 .container {
@@ -12,12 +19,12 @@
 
 .imageContainer {
     display: grid;
-    grid-template-columns: auto auto auto;
-    grid-column-gap: 50px;
-    grid-row-gap: 50px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 5%;
 }
 
 .img {
+    display: grid;
     margin-top: -3px;
     margin-left: -8px;
 }

@@ -5,18 +5,14 @@ import {
     Transformation,
     CloudinaryContext
 } from "cloudinary-react";
-import DownloadLink from "react-download-link";
 
-import { 
-    Button,
-    Modal 
-} from "antd";
+import { Button, Modal } from "antd";
 import "../global-styles.css";
 
 class ImageGallery extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = { 
             gallery: [],
             isOpen: [],
         }
@@ -66,14 +62,14 @@ class ImageGallery extends React.Component {
 
         if (gallery.length !== 0) {
             return (
-                <div>
+                <div className="imageContainer">
                     <CloudinaryContext cloudName="diegolealb">
                     <div className="imageContainer">
                         {gallery.map(data => {
                             return (
                                 data.public_id.includes("shutterStock") ?
                                 <div key={data.public_id} className="container">
-                                    <Button onClick={() => this.showModal(data)} className="img">
+                                    <button onClick={() => this.showModal(data)} className="img">
                                         <div>
                                             <Image publicId={data.public_id}>
                                                 <Transformation 
@@ -86,7 +82,7 @@ class ImageGallery extends React.Component {
                                                 />
                                             </Image>
                                         </div>
-                                    </Button>
+                                    </button>
                                     <Modal
                                         title="Download"
                                         visible={this.state.isOpen[data.public_id]}
@@ -97,10 +93,10 @@ class ImageGallery extends React.Component {
                                             <Button key="back" onClick={() => this.hideModal(data)}>Back</Button>
                                         ]}
                                     >
-                                        <a href={data.secure_url} download>
-                                            <button>
-                                                Click to download
-                                            </button>
+                                        <a href={data.secure_url}>
+                                            <Button>
+                                                Click for secure link
+                                            </Button>
                                         </a>
                                     </Modal>
                                 </div>

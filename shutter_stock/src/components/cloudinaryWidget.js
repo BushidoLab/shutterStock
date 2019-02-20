@@ -14,7 +14,7 @@ class CloudinaryWidget extends React.Component {
     render() {
         return (
             <div>
-                <Button type="primary">Add Image</Button>
+                <Button type="primary" onClick={this.showWidget}>Add Image</Button>
             </div>
         )
     }

@@ -9,11 +9,11 @@ import '../global-styles.css'
 class HomePage extends React.Component {
     render() {
         return (
-            <React.Fragment className="mainContainer">
+            <div className="mainContainer">
                 <Header />
                 <CloudinaryWidget />
                 <ImageGallery />
-            </React.Fragment>
+            </div>
         )
     }
 }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import ImageGallery from './components/imageGallery';
 import HomePage from './containers/Homepage.container';
 
 class App extends Component {
