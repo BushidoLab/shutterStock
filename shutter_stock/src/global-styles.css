@@ -1,5 +1,7 @@
 .mainContainer {
-
+    background-color: #282c34;
+    display: grid;
+    min-height: 100vh;
 }
 
 .container {
@@ -16,7 +18,6 @@
 }
 
 .img {
-    /* border: 1px solid white; */
     margin-top: -3px;
     margin-left: -8px;
 }

@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import './App.css';
 
-// import UploadForm from './components/PhotosUploader';
-import ImageUploadForm from './components/form';
+import ImageGallery from './components/imageGallery';
+import HomePage from './containers/Homepage.container';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <ImageUploadForm />
-          {/* <UploadForm /> */}
+        <header>
+          <HomePage />
         </header>
       </div>
     );
