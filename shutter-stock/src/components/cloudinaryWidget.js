@@ -7,8 +7,17 @@ class CloudinaryWidget extends React.Component {
         let widget = window.cloudinary.createUploadWidget({
             cloudName: "diegolealb",
             uploadPreset: "default_preset"
+        }, (error, result) => {
+            this.checkUploadResult(result);
         });
         widget.open();
+    }
+
+    checkUploadResult = (resultEvent) => {	
+        if (resultEvent.event === "success") {	
+            console.log('resultEvent: ', resultEvent);		
+        }	
+        console.log(resultEvent)	
     }
 
     render() {

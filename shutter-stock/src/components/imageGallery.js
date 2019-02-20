@@ -19,11 +19,7 @@ class ImageGallery extends React.Component {
     }
 
     componentDidMount() {
-        axios.get("http://localhost:8080", {
-            headers: {
-                "Access-Control-Allow-Origin": "*"
-            }
-        })
+        axios.get("http://localhost:8080")
         .then(res => {
             this.setState({ gallery: res.data });
         })

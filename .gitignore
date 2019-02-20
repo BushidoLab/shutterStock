@@ -1,0 +1,27 @@
+shutterStock-backend/node_modules
+shutterStock-backend/.env
+
+# dependencies
+shutter-stock/node_modules
+shutter-stock/.pnp
+shutter-stock/.pnp.js
+shutter-stock/package-lock.json
+
+# testing
+shutter-stock/coverage
+
+# production
+shutter-stock/build
+
+# misc
+shutter-stock/.vscode/
+shutter-stock/.DS_Store
+shutter-stock/.env.local
+shutter-stock/.env.development.local
+shutter-stock/.env.test.local
+shutter-stock/.env.production.local
+shutter-stock/.prettierrc
+
+shutter-stock/npm-debug.log*
+shutter-stock/yarn-debug.log*
+shutter-stock/yarn-error.log*
