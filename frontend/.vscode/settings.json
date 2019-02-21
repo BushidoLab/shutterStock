@@ -1,0 +1,13 @@
+{
+  "workbench.colorCustomizations": {
+    "titleBar.activeForeground": "#000",
+    "titleBar.inactiveForeground": "#000000CC",
+    "titleBar.activeBackground": "#c000b0",
+    "titleBar.inactiveBackground": "#580060"
+  },
+  "[javascript]": {
+    "editor.formatOnSave": false
+  },
+  "editor.tabSize": 2,
+  "editor.detectIndentation": true,
+}
