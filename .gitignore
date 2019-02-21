@@ -1,8 +1,8 @@
-shutterStock-backend/node_modules
-shutterStock-backend/.env
+
+*/.env
 
 # dependencies
-shutter-stock/node_modules
+*/node_modules
 shutter-stock/.pnp
 shutter-stock/.pnp.js
 shutter-stock/package-lock.json

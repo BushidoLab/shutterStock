@@ -1,9 +1,9 @@
-import React, {Fragment} from 'react';
+import React, { Fragment } from 'react';
 import '../global-styles.css';
 
 function Header() {
     return (
-        <Fragment className="mainContainer">
+        <Fragment>
             <h1 style={{color: "white"}}>Photo Gallery</h1>
         </Fragment>
     )
