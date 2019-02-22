@@ -19,7 +19,7 @@ class ImageGallery extends React.Component {
     }
 
     componentDidMount() {
-        axios.get("http://localhost:8080")
+        axios.get("http://localhost:8080/api/gallery")
         .then(res => {
             this.setState({ gallery: res.data });
         })

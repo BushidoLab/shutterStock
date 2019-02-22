@@ -4,7 +4,6 @@ import axios from 'axios';
 import { Button } from "antd";
 
 const POSTRECORD_URL = "http://localhost:8080/api/createRecord";
-const UPDATERECORD_URL = "http://localhost:8080/api/updateRecord";
 let accounts;
 let txHash;
 
@@ -15,7 +14,7 @@ class CloudinaryWidget extends React.Component {
 
     getMetamask = async () => {
         if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined')) {
-            const provider = window['ethereum'] || window.web3.currentProvider
+            // const provider = window['ethereum'] || window.web3.currentProvider
         }
         accounts = await window.ethereum.enable();
     }
@@ -23,16 +22,17 @@ class CloudinaryWidget extends React.Component {
     showWidget = async () => {
         let widget = window.cloudinary.createUploadWidget({
             cloudName: "diegolealb",
-            uploadPreset: "default_preset"
+            uploadPreset: "default_preset",
+            multiple: false,
+            clientAllowedFormats: ["png", "jpg"],
+            showAdvancedOptions: true,
+            showCompletedButton: true,
+            singleUploadAutoClose: false,
         }, (error, result) => {
             if (result.event === 'success') {
                 try {
                     this.checkUploadResult(result);
-                    this.sendTransaction(result)
-                    // .then(() => {
-                    //     this.postRequest()
-                    // });
-                    // this.createTransaction(result);
+                    this.sendTransaction(result);
                 } catch (err) {
                     console.error(err);
                 }
@@ -41,10 +41,6 @@ class CloudinaryWidget extends React.Component {
         widget.open();
     }
 
-    // createTransaction= async(result) => {
-    //     txHash = await this.sendTransaction();
-    //     await this.postRequest(result, txHash);
-    // }
 
     sendTransaction = async (result) => {
         let params = [{
