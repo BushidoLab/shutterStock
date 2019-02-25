@@ -1,29 +1,35 @@
 require('dotenv').config();
 var express = require('express');
 var router = express.Router();
-var axios = require('axios');
 
-const CLOUDINARY_URL=process.env.CLOUDINARY_URL;
+var Image = require('../public/models/schema');
+
+// Functions
+// var upload = require('../public/javascripts/axiosUpload');
+var upload = require('../public/javascripts/cloudinaryUpload');
+var getGallery = require('../public/javascripts/getGallery');
+
 let gallery;
 
-// Get the gallery before page loads
-gallery = getGallery();
-console.log(gallery);
-
 /* GET gallery page. */
-router.get('/api/gallery', function(req, res, next) {
+router.get('/gallery', async function(req, res, next) {
+  gallery = await getGallery();
   res.json(gallery);
 });
 
-function getGallery() {
-  axios.get(CLOUDINARY_URL)
-    .then(res => {
-      gallery = res.data.resources;
-      return gallery;
+/* POST request saving info to mongoDB */
+router.post('/createRecord', async(req, res) => {
+    let image = new Image({
+      cloudinaryPayload: req.body.info,
+      txHash: req.body.txHash,
+      user: req.body.user,
     })
-    .catch(err => {
-      console.error(err);
-    });
-}
+    image.save();
+});
+
+/* POST request sending image to cloudinary */
+router.post('/postImage', (req, res) => {
+  upload(req.body);
+});
 
 module.exports = router;

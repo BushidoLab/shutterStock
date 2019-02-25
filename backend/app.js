@@ -9,8 +9,6 @@ var mongoose = require("mongoose");
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var postImageRouter = require('./routes/postImage');
-var createRecordRouter = require('./routes/createRecord');
 
 var app = express();
 
@@ -25,9 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/', postImageRouter);
-app.use('/', createRecordRouter);
+app.use('/api', indexRouter);
 app.use('/users', usersRouter);
 
 // set CORS policy
@@ -38,10 +34,10 @@ app.use(function(req, res, next) {
 });
 
 // MongoDB setup
-mongoose.connect(process.env.MONGODB_URI).then(
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true }).then(
   () => {},
   err => {
-    console.log(err);
+    console.warn(err);
   }
 );
 
