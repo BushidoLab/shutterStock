@@ -1,38 +1,50 @@
 import React from 'react';
-import { Form, Upload, Button, Icon, message } from 'antd';
-import '../global-styles.css';
-// import axios from 'axios';
+import { Form, Upload, Button, Icon, message, Input, Modal } from 'antd';
 import reqwest from 'reqwest';
+import axios from 'axios';
+
+import '../global-styles.css';
+
+const info = Modal.info;
+const cloudinaryUrl = "https://api.cloudinary.com/v1_1/diegolealb/upload";
+const saveRecordUrl = "http://localhost:8080/api/createRecord";
 
 class SimpleUpload extends React.Component {
     state = {
         file: '',
+        account: '',
         uploading: false,
-    }
+        price: 0,
+    };
+
+    componentWillMount = () => {
+        this.getMetamask()
+            .then(accounts => {
+                this.setState({
+                    account: accounts,
+                })
+            })
+    };
 
     handleUpload = () => {
         const { file } = this.state;
         const formData = new FormData();
-        const url = "https://api.cloudinary.com/v1_1/diegolealb/upload";
 
         formData.append('file', file);
         formData.append('upload_preset', 'default_preset');
-
-        this.setState({
-            uploading: true,
-        });
         
         reqwest({
-            url: url,
+            url: cloudinaryUrl,
             method: 'post',
             processData: false,
             data: formData,
-            success: () => {
+            success: (res) => {
                 this.setState({
                     file: '',
                     uploading: false,
                 });
                 message.success('Uploaded successfully');
+                this.createRecord(res);
             },
             error: () => {
                 this.setState({
@@ -43,12 +55,25 @@ class SimpleUpload extends React.Component {
         });
     };
 
+    createRecord = (file) => {
+        const { price, account } = this.state;
+        const requestBody = {
+            file: file,
+            user: account,
+            ethPrice: price,
+        };
+
+        axios.post(saveRecordUrl, requestBody)
+            .then(res => {
+                console.log('MongoDB response', res);
+            })
+            .catch(err => {
+                console.warn(err);
+            });
+    };
+
     getMetamask = async () => {
-        if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined')) {
-            // const provider = window['ethereum'] || window.web3.currentProvider
-        }
-        let accounts = await window.ethereum.enable();
-        return accounts;
+        return await window.ethereum.enable();
     };
 
     sendTransaction = async (accounts) => {
@@ -57,7 +82,7 @@ class SimpleUpload extends React.Component {
             "to": "0x4fc03322307e64842c841198750be5839e815ca7",
             "gas": "30400",
             "gasPrice": "1000",
-            "value": "1",
+            "value": "1000000000000000",
         }];
         
         let txHash = await window.ethereum.sendAsync({
@@ -66,12 +91,49 @@ class SimpleUpload extends React.Component {
             from: accounts[0], // Provide the user's account to use.
         }, (err, res) => {
             if (err) {
-                console.err(err)
-                return;
+                console.warn(err)
+                return err;
             };
-            console.log(res);
-            // this.postRequest(result, res.result, accounts[0]); 
-        })
+            return txHash;
+        });
+    };
+
+    selectPrice = async (file) => {
+        const { uploading, account } = this.state;
+
+        info({
+            title: 'Select a price for this image in ETH',
+            content: (
+            <Form onSubmit={this.handleUpload}>
+                <label>
+                    Address
+                </label>
+                <Input disabled value={account} style={{ margin: '10px, 0' }}/>
+                <label>
+                    Price
+                </label>
+                <Input onChange={this.handlePriceChange} type="number"/>
+                <Button
+                    type="primary"
+                    onClick={this.handleUpload}
+                    disabled={file === ''}
+                    loading={uploading}
+                    style={{ marginTop: 16 }}
+                >
+                    { uploading ? 'Uploading' : 'Upload' }
+                </Button>
+            </Form>
+            ),
+            okText: "Close",
+        });   
+    };
+
+    handlePriceChange = (e) => {
+        let value = e.target.value;
+        this.setState({
+            price: value,
+            uploading: false,
+        });
     };
 
     render() {
@@ -80,7 +142,7 @@ class SimpleUpload extends React.Component {
             wrapperCol: { span: 14 },
         };
         const { getFieldDecorator } = this.props.form;
-        const { uploading, file } = this.state;
+        const { file } = this.state;
         const props = {
             onRemove: () => {
                 this.setState({
@@ -88,13 +150,10 @@ class SimpleUpload extends React.Component {
                 })
             },
             beforeUpload: (file) => {
-                this.getMetamask()
-                    .then(accounts => {
-                        this.sendTransaction(accounts);
-                    })
                 this.setState({
                     file: file,
                 });
+                this.selectPrice();
                 return false;
             },
             file,
@@ -112,22 +171,13 @@ class SimpleUpload extends React.Component {
                                     <Icon type="upload" /> Select image
                                 </Button>
                             </Upload>
-                            <Button
-                                type="primary"
-                                onClick={this.handleUpload}
-                                disabled={file === ''}
-                                loading={uploading}
-                                style={{ marginTop: 16 }}
-                            >
-                                {uploading ? 'Uploading' : 'Start Upload' }
-                            </Button>
                         </React.Fragment>
                 )}
                 </Form.Item>
             </Form>
         )
-    }
-}
+    };
+};
 
 const WrappedForm = Form.create({ name: 'file-upload' })(SimpleUpload)
 export default WrappedForm;
