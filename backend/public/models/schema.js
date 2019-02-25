@@ -7,7 +7,7 @@ const imageSchema = new Schema({
     cloudinaryPayload: Object, // Entire cloudinary payload
     ethPrice: Number, 
     file: Object,
-    owners: Array,
+    owners: [String],
 });
 
 const Image = mongoose.model("Image", imageSchema);
