@@ -5,17 +5,14 @@ var router = express.Router();
 var Image = require('../public/models/schema');
 
 // Functions
-// var upload = require('../public/javascripts/axiosUpload');
-var upload = require('../public/javascripts/cloudinaryUpload');
-// var getGallery = require('../public/javascripts/getGallery');
-var getGallery = require('../public/javascripts/getGalleryFromDB');
+// var getGallery = require('../public/javascripts/getGallery'); // Getting gallery from cloudinary
+var getGallery = require('../public/javascripts/getGalleryFromDB'); // Getting gallery from MongoDB
 
 let gallery;
 
 /* GET gallery page. */
 router.get('/gallery', async function(req, res, next) {
   gallery = await getGallery();
-  console.log('gallery', gallery);
   res.json(gallery);
 });
 
@@ -27,6 +24,7 @@ router.post('/createRecord', async(req, res) => {
       txHash: req.body.txHash,
       user: req.body.user,
       ethPrice: req.body.ethPrice,
+      owners: req.body.owners,
     })
     image.save();
 });
