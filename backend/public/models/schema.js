@@ -5,7 +5,9 @@ const imageSchema = new Schema({
     user: String, // Ethereum address of the user
     txHash: String, // Contains eth txHash
     cloudinaryPayload: Object, // Entire cloudinary payload
-    ethPrice: String, 
+    ethPrice: Number, 
+    file: Object,
+    owners: Array,
 });
 
 const Image = mongoose.model("Image", imageSchema);

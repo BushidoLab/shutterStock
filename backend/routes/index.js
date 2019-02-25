@@ -7,13 +7,15 @@ var Image = require('../public/models/schema');
 // Functions
 // var upload = require('../public/javascripts/axiosUpload');
 var upload = require('../public/javascripts/cloudinaryUpload');
-var getGallery = require('../public/javascripts/getGallery');
+// var getGallery = require('../public/javascripts/getGallery');
+var getGallery = require('../public/javascripts/getGalleryFromDB');
 
 let gallery;
 
 /* GET gallery page. */
 router.get('/gallery', async function(req, res, next) {
   gallery = await getGallery();
+  console.log('gallery', gallery);
   res.json(gallery);
 });
 
@@ -21,8 +23,10 @@ router.get('/gallery', async function(req, res, next) {
 router.post('/createRecord', async(req, res) => {
     let image = new Image({
       cloudinaryPayload: req.body.info,
+      file: req.body.file,
       txHash: req.body.txHash,
       user: req.body.user,
+      ethPrice: req.body.ethPrice,
     })
     image.save();
 });
