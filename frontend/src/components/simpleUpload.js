@@ -57,10 +57,12 @@ class SimpleUpload extends React.Component {
 
     createRecord = (file) => {
         const { price, account } = this.state;
+
         const requestBody = {
             file: file,
             user: account,
             ethPrice: price,
+            owners: account,
         };
 
         axios.post(saveRecordUrl, requestBody)
@@ -74,28 +76,6 @@ class SimpleUpload extends React.Component {
 
     getMetamask = async () => {
         return await window.ethereum.enable();
-    };
-
-    sendTransaction = async (accounts) => {
-        let params = [{
-            "from": accounts[0],
-            "to": "0x4fc03322307e64842c841198750be5839e815ca7",
-            "gas": "30400",
-            "gasPrice": "1000",
-            "value": "1000000000000000",
-        }];
-        
-        let txHash = await window.ethereum.sendAsync({
-            method: 'eth_sendTransaction',
-            params: params,
-            from: accounts[0], // Provide the user's account to use.
-        }, (err, res) => {
-            if (err) {
-                console.warn(err)
-                return err;
-            };
-            return txHash;
-        });
     };
 
     selectPrice = async (file) => {
@@ -160,14 +140,14 @@ class SimpleUpload extends React.Component {
         };
 
         return (
-            <Form onSubmit={this.handleUpload} className="formContainer">
+            <Form onSubmit={this.handleUpload} className="selectImageContainer">
                 <Form.Item {...formItemLayout} >
                     {getFieldDecorator('upload', {
                         valuePropName: 'fileList',
                     })(
                         <React.Fragment>
                             <Upload {...props} listType="picture" accept=".jpg, .jpeg, .png">
-                                <Button>
+                                <Button className="selectImageBtn">
                                     <Icon type="upload" /> Select image
                                 </Button>
                             </Upload>

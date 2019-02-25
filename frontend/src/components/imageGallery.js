@@ -32,7 +32,31 @@ class ImageGallery extends React.Component {
         this.setState({
             address: account,
         });
-    }
+    };
+
+    sendTransaction = async (data) => {
+        const { address } = this.state;
+
+        let params = [{
+            "from": address[0],
+            "to": data.user,
+            "gas": "10000",
+            "gasPrice": "1000",
+            "value": (data.ethPrice * 1000000000000000).toString(),
+        }];
+        
+        let txHash = await window.ethereum.sendAsync({
+            method: 'eth_sendTransaction',
+            params: params,
+            from: address[0],
+        }, (err, res) => {
+            if (err) {
+                console.warn('sendTransaction ERROR', err)
+                return err;
+            };
+            return txHash;
+        });
+    };
     
     showModal = (data) => {
         let public_id = data.public_id;
@@ -86,7 +110,7 @@ class ImageGallery extends React.Component {
                                             </Image>
                                         </div>
                                     </button>
-                                    {data.user === address ? // 
+                                    {!data.owners.includes(address[0]) ? // If user is an owner of the image
                                     <Modal
                                         title="Download"
                                         visible={this.state.isOpen[data.file.public_id]}
@@ -97,15 +121,13 @@ class ImageGallery extends React.Component {
                                             <Button key="back" onClick={() => this.hideModal(data.file)}>Back</Button>
                                         ]}
                                     >
-                                        <p>Price: {data.ethPrice}</p>
+                                        <p>Price: {data.ethPrice} ETH</p>
                                         <p>Owner address: {data.user}</p>
-                                        <a href={data.file.secure_url}>
-                                            <Button>
-                                                Click for secure link
-                                            </Button>
-                                        </a>
+                                        <Button onClick={() => this.sendTransaction(data)} type="primary">
+                                            Purchase image
+                                        </Button>
                                     </Modal>
-                                    : 
+                                    :
                                     <Modal
                                         title="Download"
                                         visible={this.state.isOpen[data.file.public_id]}
@@ -116,10 +138,12 @@ class ImageGallery extends React.Component {
                                             <Button key="back" onClick={() => this.hideModal(data.file)}>Back</Button>
                                         ]}
                                     >
-                                        <p>Price: {data.ethPrice}</p>
-                                        <p>Owner address: {data.user}</p>
+                                        <p>Creator address: {data.user}</p>
+                                        <p>Title: {data.file.original_filename}</p>
+                                        <p>Dimensions: {data.file.width}x{data.file.height}</p>
+                                        <p>Format: {data.file.format.toUpperCase()}</p>
                                         <a href={data.file.secure_url}>
-                                            <Button>
+                                            <Button type="primary">
                                                 Click for secure link
                                             </Button>
                                         </a>
