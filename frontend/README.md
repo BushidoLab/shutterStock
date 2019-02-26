@@ -2,7 +2,6 @@
 This repository contains code for an image gallery implemented using [cloudinary](www.cloudinary.com).
 It displays images from cloudinary which were uploaded using this web app. The images uploaded get watermarked and are set up for purchase.
 
-
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
