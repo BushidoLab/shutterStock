@@ -40,12 +40,12 @@ class ImageGallery extends React.Component {
         let params = [{
             "from": address[0],
             "to": data.user,
-            "gas": "10000",
+            "gas": "100000",
             "gasPrice": "1000",
             "value": (data.ethPrice * 1000000000000000).toString(),
         }];
         
-        let txHash = await window.ethereum.sendAsync({
+        window.ethereum.sendAsync({
             method: 'eth_sendTransaction',
             params: params,
             from: address[0],
@@ -54,12 +54,26 @@ class ImageGallery extends React.Component {
                 console.warn('sendTransaction ERROR', err)
                 return err;
             };
-            return txHash;
+            console.log('sendTransaction response: ', res);
+            const txHash = res.result;
+
+            const body = {
+                id: data._id,
+                address: address[0]
+            };
+
+            axios.post('http://localhost:8080/api/addOwner', body)
+                .then(res => {
+                    console.log('axios response: ', res);
+                })
+                .catch(err => {
+                    console.warn('axios ERROR: ', err);
+                })
         });
     };
     
     showModal = (data) => {
-        let public_id = data.public_id;
+        const public_id = data.public_id;
         this.setState({
             isOpen: {
                 [public_id]: true,
@@ -68,7 +82,7 @@ class ImageGallery extends React.Component {
     }
 
     hideModal = (data) => {
-        let public_id = data.public_id;
+        const public_id = data.public_id;
         this.setState({
             isOpen: {
                 [public_id]: false,
@@ -79,7 +93,7 @@ class ImageGallery extends React.Component {
     render() {
         const { gallery, address } = this.state;
 
-        let waterMark = {
+        const waterMark = {
             fontFamily: "Arial", 
             fontSize: 30, 
             fontWeight: "bold", 
@@ -89,76 +103,69 @@ class ImageGallery extends React.Component {
 
         if (gallery.length !== 0) {
             return (
-                <div className="imageContainer">
-                    <CloudinaryContext cloudName="diegolealb">
+                <CloudinaryContext cloudName="diegolealb">
                     <div className="imageContainer">
-                        {gallery.map(data => {
-                            return (
-                                data.file.public_id.includes("shutterStock") ?
-                                <div key={data.file.public_id} className="container">
-                                    <button onClick={() => this.showModal(data.file)} className="img">
-                                        <div>
-                                            <Image publicId={data.file.public_id}>
-                                                <Transformation 
-                                                    width="400"
-                                                    height="400"
-                                                    crop="scale"
-                                                />
-                                                <Transformation 
-                                                    overlay={waterMark}
-                                                />
-                                            </Image>
-                                        </div>
-                                    </button>
-                                    {!data.owners.includes(address[0]) ? // If user is an owner of the image
-                                    <Modal
-                                        title="Download"
-                                        visible={this.state.isOpen[data.file.public_id]}
-                                        onCancel={() => this.hideModal(data.file)}
-                                        cancelButtonProps={() => this.hideModal(data.file)}
-                                        zIndex="100"
-                                        footer={[
-                                            <Button key="back" onClick={() => this.hideModal(data.file)}>Back</Button>
-                                        ]}
-                                    >
-                                        <p>Price: {data.ethPrice} ETH</p>
-                                        <p>Owner address: {data.user}</p>
-                                        <Button onClick={() => this.sendTransaction(data)} type="primary">
-                                            Purchase image
+                        {gallery.map(data => 
+                            <div key={data.file.public_id} className="container">
+                                <button onClick={() => this.showModal(data.file)} className="imgBtn">
+                                    <Image publicId={data.file.public_id} className="img">
+                                        <Transformation 
+                                            width="400"
+                                            height="400"
+                                            crop="scale"
+                                        />
+                                        <Transformation 
+                                            overlay={waterMark}
+                                        />
+                                    </Image>
+                                </button>
+                                <h2>{data.file.original_filename}</h2>
+                                {!data.owners.includes(address[0]) ? // If user is an owner of the image
+                                <Modal
+                                    title="Download"
+                                    visible={this.state.isOpen[data.file.public_id]}
+                                    onCancel={() => this.hideModal(data.file)}
+                                    cancelButtonProps={() => this.hideModal(data.file)}
+                                    zIndex="100"
+                                    footer={[
+                                        <Button key="back" onClick={() => this.hideModal(data.file)}>Back</Button>
+                                    ]}
+                                >
+                                    <p>Price: {data.ethPrice} ETH</p>
+                                    <p>Owner address: {data.user}</p>
+                                    <Button onClick={() => this.sendTransaction(data)} type="primary">
+                                        Purchase image
+                                    </Button>
+                                </Modal>
+                                :
+                                <Modal
+                                    title="Download"
+                                    visible={this.state.isOpen[data.file.public_id]}
+                                    onCancel={() => this.hideModal(data.file)}
+                                    cancelButtonProps={() => this.hideModal(data.file)}
+                                    zIndex="100"
+                                    footer={[
+                                        <Button key="back" onClick={() => this.hideModal(data.file)}>Back</Button>
+                                    ]}
+                                >
+                                    <p>Creator address: {data.user}</p>
+                                    <p>Title: {data.file.original_filename}</p>
+                                    <p>Dimensions: {data.file.width}x{data.file.height}</p>
+                                    <p>Format: {data.file.format.toUpperCase()}</p>
+                                    <a href={data.file.secure_url}>
+                                        <Button type="primary">
+                                            Click for secure link
                                         </Button>
-                                    </Modal>
-                                    :
-                                    <Modal
-                                        title="Download"
-                                        visible={this.state.isOpen[data.file.public_id]}
-                                        onCancel={() => this.hideModal(data.file)}
-                                        cancelButtonProps={() => this.hideModal(data.file)}
-                                        zIndex="100"
-                                        footer={[
-                                            <Button key="back" onClick={() => this.hideModal(data.file)}>Back</Button>
-                                        ]}
-                                    >
-                                        <p>Creator address: {data.user}</p>
-                                        <p>Title: {data.file.original_filename}</p>
-                                        <p>Dimensions: {data.file.width}x{data.file.height}</p>
-                                        <p>Format: {data.file.format.toUpperCase()}</p>
-                                        <a href={data.file.secure_url}>
-                                            <Button type="primary">
-                                                Click for secure link
-                                            </Button>
-                                        </a>
-                                    </Modal>
-                                    }
-                                </div>
-                                : null
-                            )
-                        })}
+                                    </a>
+                                </Modal>
+                                }
+                            </div>
+                        )}
                         </div>
                     </CloudinaryContext>
-                </div>
             )
         } else {
-            return null;
+            return <h1>No images in the gallery currently</h1>;
         }
     }
 }

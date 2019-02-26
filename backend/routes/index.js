@@ -29,9 +29,17 @@ router.post('/createRecord', async(req, res) => {
     image.save();
 });
 
-/* POST request sending image to cloudinary */
-router.post('/postImage', (req, res) => {
-  upload(req.body);
+/* POST request adding a user to the owners array */
+router.post('/addOwner', async(req, res) => {
+  console.log('request body: ', req.body)
+  Image.findById(req.body.id, function(err, res) {
+    if (err) {
+      return err;
+    }
+    
+    res.owners.push(req.body.address);
+    res.save();
+  });
 });
 
 module.exports = router;

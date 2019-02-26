@@ -5,6 +5,4 @@ node_modules
 .env
 
 # misc
-.vscode/
-.prettierrc
 package-lock.json

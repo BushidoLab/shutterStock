@@ -22,16 +22,22 @@
 }
 
 .imageContainer {
-    margin-top: 80px;
+    margin-top: 150px;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
 }
 
+.imgBtn {
+    width: 405px;
+    height: 405px;
+    background-color: black;
+    margin: 1px solid black;
+}
+
 .img {
-    display: flex;
-    margin-top: -3px;
-    margin-left: -8px;
+    margin-left: -5px;
+    margin-top: -1px;
 }
 
 .selectImageContainer {
