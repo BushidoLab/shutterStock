@@ -36,14 +36,19 @@ class ImageGallery extends React.Component {
 
     sendTransaction = async (data) => {
         const { address } = this.state;
+        let value = (data.ethPrice * 1000000000000000);
+        value = (value * 1.38777866596);
 
         let params = [{
             "from": address[0],
             "to": data.user,
             "gas": "100000",
-            "gasPrice": "1000",
-            "value": (data.ethPrice * 1000000000000000).toString(),
+            "gasPrice": "50000",
+            "value": value.toString(),
         }];
+
+        // console.log('Value', value);
+        console.log(window.ethereum);
         
         window.ethereum.sendAsync({
             method: 'eth_sendTransaction',
@@ -57,18 +62,20 @@ class ImageGallery extends React.Component {
             console.log('sendTransaction response: ', res);
             const txHash = res.result;
 
-            const body = {
-                id: data._id,
-                address: address[0]
-            };
-
-            axios.post('http://localhost:8080/api/addOwner', body)
-                .then(res => {
-                    console.log('axios response: ', res);
-                })
-                .catch(err => {
-                    console.warn('axios ERROR: ', err);
-                })
+            if (txHash) {
+                const body = {
+                    id: data._id,
+                    address: address[0]
+                };
+    
+                axios.post('http://localhost:8080/api/addOwner', body)
+                    .then(res => {
+                        console.log('axios response: ', res);
+                    })
+                    .catch(err => {
+                        console.warn('axios ERROR: ', err);
+                    });
+            }
         });
     };
     
@@ -119,7 +126,6 @@ class ImageGallery extends React.Component {
                                         />
                                     </Image>
                                 </button>
-                                <h2>{data.file.original_filename}</h2>
                                 {!data.owners.includes(address[0]) ? // If user is an owner of the image
                                 <Modal
                                     title="Download"
